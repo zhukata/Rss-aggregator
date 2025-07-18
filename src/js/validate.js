@@ -1,9 +1,18 @@
 import * as yup from 'yup';
 import keyBy from 'lodash/keyBy.js';
 
+yup.setLocale({
+  string: {
+    url: 'errors.url',
+  },
+  mixed: {
+    required: 'errors.required',
+  },
+});
+
 const schema = yup.object().shape({
   url: yup.string()
-    .required('URL обязателен').url('Ссылка должна быть валидным URL'),
+    .required().url(),
 });
 
 const validate = (fields) => schema

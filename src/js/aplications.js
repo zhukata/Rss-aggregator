@@ -1,10 +1,19 @@
 import { isEmpty } from 'lodash';
 import onChange from 'on-change';
+import i18next from 'i18next';
 
 import validate from './validate.js';
 import renderFeedback from './views.js';
+import resources from '../locales/index.js';
 
-export default () => {
+export default async () => {
+  const newIstance = i18next.createInstance();
+  await newIstance.init({
+    lng: 'ru',
+    debug: true,
+    resources,
+  });
+
   const state = {
     errors: [],
     valid: true,
@@ -21,7 +30,7 @@ export default () => {
 
   const watchedState = onChange(state, (path) => {
     if (['process', 'errors'].includes(path)) {
-      renderFeedback(watchedState, elements);
+      renderFeedback(watchedState, elements, newIstance);
     }
   });
 
@@ -36,17 +45,18 @@ export default () => {
     validate({ url: inputUrl })
       .then((errors) => {
         const isDuplicate = watchedState.data.some((item) => item.url === inputUrl);
+        const newErrors = { ...errors };
+
         if (isDuplicate) {
-          errors.url = { message: 'RSS уже существует' };
+          newErrors.url = { message: 'errors.duplicate' };
         }
 
-        watchedState.errors = errors;
-        watchedState.process = isEmpty(errors) ? 'success' : 'failed';
+        watchedState.errors = newErrors;
+        watchedState.process = isEmpty(newErrors) ? 'success' : 'failed';
 
-        if (isEmpty(errors)) {
+        if (isEmpty(newErrors)) {
           watchedState.data.push({ url: inputUrl });
         }
-        console.log(state.data);
       });
   });
 };

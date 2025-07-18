@@ -1,25 +1,30 @@
-export default (state, elements) => {
+export default (state, elements, newIstance) => {
   const { process, errors } = state;
-  const { url, feedback, submitButton } = elements;
+  const {
+    url, feedback, submitButton, form,
+  } = elements;
 
   url.classList.remove('is-invalid');
   feedback.textContent = '';
   feedback.classList.remove('text-danger', 'text-success');
 
   switch (process) {
-    case 'failed':
-      url.classList.add('is-invalid');
-      feedback.textContent = errors.url?.message || 'Ошибка валидации';
+    case 'failed': {
+      const key = errors.url?.message || 'errors.unknown';
+      feedback.textContent = newIstance.t(key);
       feedback.classList.add('text-danger');
+      url.classList.add('is-invalid');
       submitButton.classList.remove('disabled');
       break;
+    }
 
-    case 'success':
-      feedback.textContent = 'RSS успешно загружен';
+    case 'success': {
+      feedback.textContent = newIstance.t('success');
       feedback.classList.add('text-success');
       submitButton.classList.remove('disabled');
-      elements.form.reset(); // опционально
+      form.reset();
       break;
+    }
 
     case 'sending':
       submitButton.classList.add('disabled');
