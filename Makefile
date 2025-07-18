@@ -9,3 +9,6 @@ lint:
 
 link:
 	npm link
+
+start:
+	npm start

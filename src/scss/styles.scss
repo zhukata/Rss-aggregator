@@ -1,2 +1,5 @@
-// Import all of Bootstrap's CSS
-@import "~bootstrap/scss/bootstrap";
+// Old
+// @import "~bootstrap/scss/bootstrap";
+
+// New (частично совместимо)
+@use "bootstrap";
