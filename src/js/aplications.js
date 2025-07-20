@@ -1,12 +1,19 @@
 import { isEmpty } from 'lodash';
 import onChange from 'on-change';
+import i18next from 'i18next';
 
 import validate from './validate.js';
 import downloadRss from './downloadRss.js';
 import parseRss from './parser.js';
 import renderFeedback from './views.js';
+import resources from '../locales/index.js';
 
-export default () => {
+export default async () => {
+  await i18next.init({
+    lng: 'ru',
+    debug: true,
+    resources,
+  });
   const state = {
     errors: [],
     process: 'filling',
@@ -19,6 +26,8 @@ export default () => {
     url: document.querySelector('input[name="url"]'),
     submitButton: document.querySelector('button[type="submit"]'),
     feedback: document.querySelector('.feedback'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
   };
 
   const watchedState = onChange(state, (path) => {
@@ -29,40 +38,50 @@ export default () => {
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-
     const formData = new FormData(elements.form);
-    const inputUrl = formData.get('url').trim();
+    const inputUrl = formData.get('url');
+
     watchedState.process = 'sending';
+
+    const createAppError = (message, type, payload) => {
+      const err = new Error(message);
+      err.type = type;
+      err.payload = payload;
+      return err;
+    };
 
     validate({ url: inputUrl })
       .then((errors) => {
-        const isDuplicate = watchedState.feeds.some((f) => f.url === inputUrl);
-        const newErrors = { ...errors };
-
-        if (isDuplicate) {
-          newErrors.url = { message: 'errors.duplicate' };
+        if (!isEmpty(errors)) {
+          return Promise.reject(createAppError('error.validation', 'validation', {
+            url: { message: 'errors.validate' },
+          }));
         }
 
-        const hasErrors = !isEmpty(newErrors);
-        watchedState.errors = newErrors;
-        watchedState.process = hasErrors ? 'failed' : 'sending';
-
-        if (hasErrors) {
-          return Promise.reject(new Error('Validation failed'));
+        const isDuplicate = watchedState.feeds.some((feed) => feed.url === inputUrl);
+        if (isDuplicate) {
+          return Promise.reject(createAppError('errors.duplicate', 'duplicate', {
+            url: { message: 'errors.duplicate' },
+          }));
         }
 
         return downloadRss(inputUrl);
       })
-      .then((rssContent) => {
-        const { feed, posts } = parseRss(rssContent, inputUrl);
+      .then((rssContent) => parseRss(rssContent, inputUrl))
+      .then(({ feed, posts }) => {
         watchedState.feeds.push(feed);
         watchedState.posts.push(...posts);
         watchedState.process = 'success';
+        watchedState.errors = {};
       })
       .catch((err) => {
-        if (err.message === 'Validation failed') return;
-        watchedState.errors = { url: { message: err.message || 'errors.unknown' } };
-        watchedState.process = 'failed';
+        if (err.type === 'validation' || err.type === 'duplicate') {
+          watchedState.errors = err.payload;
+          watchedState.process = 'failed';
+        } else {
+          watchedState.errors = { url: { message: err.message || 'errors.unknown' } };
+          watchedState.process = 'failed';
+        }
       });
   });
 };
