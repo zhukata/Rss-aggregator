@@ -6,7 +6,7 @@ export default {
     errors: {
       url: 'Ссылка должна быть валидным URL',
       required: 'Обязательное поле',
-      validate: 'Ошибка валидации',
+      validate: 'Ссылка должна быть валидным URL',
       network: 'Ошибка сети',
       duplicate: 'RSS уже существует',
       unknown: 'Неизвестная ошибка',

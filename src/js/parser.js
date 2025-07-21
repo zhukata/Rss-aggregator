@@ -1,6 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
-
-const parseRss = (xml, url) => {
+const parseRss = (xml) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, 'application/xml');
   const parseError = doc.querySelector('parsererror');
@@ -11,24 +9,9 @@ const parseRss = (xml, url) => {
 
   const title = doc.querySelector('channel > title')?.textContent ?? 'No title';
   const description = doc.querySelector('channel > description')?.textContent ?? 'No description';
+  const items = doc.querySelectorAll('item');
 
-  const feedId = uuidv4();
-
-  const posts = Array.from(doc.querySelectorAll('item')).map((item) => ({
-    id: uuidv4(),
-    feedId,
-    title: item.querySelector('title')?.textContent ?? 'No title',
-    link: item.querySelector('link')?.textContent ?? '#',
-  }));
-
-  const feed = {
-    id: feedId,
-    url,
-    title,
-    description,
-  };
-
-  return { feed, posts };
+  return { title, description, items };
 };
 
 export default parseRss;

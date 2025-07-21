@@ -13,7 +13,7 @@ const createCard = (titleText, listItems) => {
 
   const list = document.createElement('ul');
   list.classList.add('list-group', 'border-0', 'rounded-0');
-  list.append(...listItems);
+  list.prepend(...listItems);
 
   cardBody.append(cardTitle);
   cardEl.append(cardBody, list);
@@ -21,7 +21,7 @@ const createCard = (titleText, listItems) => {
   return cardEl;
 };
 
-const renderFeeds = (data) => data.map((item) => {
+const createFeedsEl = (data) => data.map((item) => {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'border-0', 'border-end-0');
 
@@ -37,7 +37,7 @@ const renderFeeds = (data) => data.map((item) => {
   return li;
 });
 
-const renderPosts = (data) => data.map((item) => {
+const createPostsEl = (data) => data.map((item) => {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -56,14 +56,20 @@ const renderContent = (feeds, posts, elements) => {
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
 
-  const feedsCard = createCard(i18next.t('feeds'), renderFeeds(feeds));
-  const postsCard = createCard(i18next.t('posts'), renderPosts(posts));
+  const feedsCard = createCard(i18next.t('feeds'), createFeedsEl(feeds));
+  const postsCard = createCard(i18next.t('posts'), createPostsEl(posts));
 
   elements.feeds.append(feedsCard);
   elements.posts.append(postsCard);
 };
 
-export default (state, elements) => {
+const renderNewPosts = (newPosts, posts) => {
+  const ulPosts = posts.querySelector('.list-group');
+  const newLiEl = createPostsEl(newPosts);
+  ulPosts.prepend(...newLiEl);
+};
+
+const render = (state, elements) => {
   const {
     process, errors, feeds, posts,
   } = state;
@@ -93,6 +99,12 @@ export default (state, elements) => {
       renderContent(feeds, posts, elements);
       break;
     }
+    // case 'updated': {
+    //   const ulPosts = elements.posts.querySelector('.list-group');
+    //   const newLiEl = createPostsEl(newPosts);
+    //   ulPosts.prepend(...newLiEl);
+    //   break;
+    // }
 
     case 'sending':
       submitButton.classList.add('disabled');
@@ -102,3 +114,5 @@ export default (state, elements) => {
       throw new Error(`Unknown process state: ${process}`);
   }
 };
+
+export { render, renderNewPosts };
