@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "vite",
+    "build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,7 +34,6 @@
     "lodash": "^4.17.21",
     "on-change": "^5.0.1",
     "uuid": "^11.1.0",
-    "valtio": "^2.1.5",
     "yup": "^1.6.1"
   }
 }

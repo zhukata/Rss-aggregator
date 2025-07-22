@@ -1,11 +1,11 @@
-import { isEmpty, update } from 'lodash';
+import { isEmpty } from 'lodash';
 import onChange from 'on-change';
 import i18next from 'i18next';
 
 import validate from './validate.js';
 import downloadRss from './downloadRss.js';
 import parseRss from './parser.js';
-import { render, renderModal, renderNewPosts } from './views.js';
+import { render, renderNewPosts } from './views.js';
 import resources from '../locales/index.js';
 import { createFeed, createPosts } from './utils.js';
 

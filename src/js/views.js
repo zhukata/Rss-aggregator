@@ -85,9 +85,11 @@ const createPostsEl = (data) => data.map((item) => {
   return li;
 });
 
-const renderContent = (feeds, posts, elements) => {
-  elements.feeds.innerHTML = '';
-  elements.posts.innerHTML = '';
+const renderContent = (elements, state) => {
+  const { feeds, posts } = state;
+  const { feeds: feedsEl, posts: postsEl } = elements;
+  feedsEl.innerHTML = '';
+  postsEl.innerHTML = '';
 
   const feedsCard = createCard(i18next.t('feeds'), createFeedsEl(feeds));
   const postsCard = createCard(i18next.t('posts'), createPostsEl(posts));
@@ -104,7 +106,7 @@ const renderNewPosts = (newPosts, posts) => {
 
 const render = (state, elements) => {
   const {
-    process, errors, feeds, posts,
+    process, errors,
   } = state;
   const {
     url, feedback, submitButton, form,
@@ -129,7 +131,7 @@ const render = (state, elements) => {
       feedback.classList.add('text-success');
       submitButton.classList.remove('disabled');
       form.reset();
-      renderContent(feeds, posts, elements, state);
+      renderContent(elements, state);
       break;
     }
 
@@ -143,27 +145,3 @@ const render = (state, elements) => {
 };
 
 export { render, renderNewPosts, renderModal };
-
-{ /* <div class="modal fade show" id="modal" tabindex="-1" aria-labelledby="modal" style="display: block;" aria-modal="true" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Lorem ipsum 2025-07-22T08:05:00Z</h5>
-          <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-break">Qui fugiat enim ea occaecat nisi qui.</div>
-        <div class="modal-footer">
-          <a class="btn btn-primary full-article" href="http://example.com/test/1753171500" role="button" target="_blank" rel="noopener noreferrer">
-            Читать полностью
-          </a>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-10 col-lg-8 order-1 mx-auto posts"><div class="card border-0">
-      <div class="card-body"><h2 class="card-title h4">Посты</h2></div>
-    <ul class="list-group border-0 rounded-0">
-      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171620" class="fw-bold" data-id="13" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:07:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="13" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li>
-      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171560" class="fw-normal link-secondary" data-id="12" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:06:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="12" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li>
-      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171500" class="fw-normal link-secondary" data-id="2" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:05:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="2" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li> */ }
