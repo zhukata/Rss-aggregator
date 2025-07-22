@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/zhukata/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/zhukata/frontend-project-11/actions)",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "vite",
     "build": "vite build",
@@ -21,7 +22,7 @@
   "homepage": "https://github.com/zhukata/frontend-project-11#readme",
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.2.2",
-    "eslint": "^8.57.1",
+    "eslint": "^9.31.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.32.0",
     "sass": "^1.89.2",
