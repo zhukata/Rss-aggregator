@@ -3,6 +3,7 @@ export default {
     success: 'RSS успешно загружен',
     feeds: 'Фиды',
     posts: 'Посты',
+    show: 'Просмотр',
     errors: {
       url: 'Ссылка должна быть валидным URL',
       required: 'Обязательное поле',

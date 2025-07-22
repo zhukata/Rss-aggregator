@@ -17,6 +17,7 @@ const createPosts = (items, feedId) => {
     feedId,
     title: item.querySelector('title')?.textContent ?? 'No title',
     link: item.querySelector('link')?.textContent ?? '#',
+    description: item.querySelector('description')?.textContent ?? 'No description',
   }));
   return posts;
 };

@@ -43,12 +43,21 @@ const createPostsEl = (data) => data.map((item) => {
 
   const link = document.createElement('a');
   link.classList.add('fw-bold');
+  link.setAttribute('data-id', item.id);
   link.textContent = item.title;
   link.href = item.link;
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
 
-  li.append(link);
+  const button = document.createElement('button');
+  // <button type="button" class="btn btn-outline-primary btn-sm" data-id="13"
+  button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+  button.setAttribute('type', 'button');
+  button.setAttribute('data-id', item.id);
+  button.setAttribute('data-bs-toggle', 'modal');
+  button.setAttribute('data-bs-target', '#modal');
+  button.textContent = i18next.t('show');
+  li.append(link, button);
   return li;
 });
 
@@ -69,6 +78,20 @@ const renderNewPosts = (newPosts, posts) => {
   ulPosts.prepend(...newLiEl);
 };
 
+const renderModal = (target, posts) => {
+  target.previousSibling.classList = 'fw-normal link-secondary';
+  const modalTitleEl = document.querySelector('.modal-title');
+  const modalBodyEl = document.querySelector('.modal-body');
+  const modalFooter = document.querySelector('.modal-footer');
+  const modalLink = modalFooter.querySelector('a');
+
+  const postId = target.dataset.id;
+  const currentPost = posts.filter((post) => post.id === postId)[0];
+
+  modalTitleEl.textContent = currentPost.title;
+  modalBodyEl.textContent = currentPost.description;
+  modalLink.href = currentPost.link;
+};
 const render = (state, elements) => {
   const {
     process, errors, feeds, posts,
@@ -76,7 +99,7 @@ const render = (state, elements) => {
   const {
     url, feedback, submitButton, form,
   } = elements;
-
+  console.log(elements.showButtons);
   url.classList.remove('is-invalid');
   feedback.textContent = '';
   feedback.classList.remove('text-danger', 'text-success');
@@ -99,12 +122,6 @@ const render = (state, elements) => {
       renderContent(feeds, posts, elements);
       break;
     }
-    // case 'updated': {
-    //   const ulPosts = elements.posts.querySelector('.list-group');
-    //   const newLiEl = createPostsEl(newPosts);
-    //   ulPosts.prepend(...newLiEl);
-    //   break;
-    // }
 
     case 'sending':
       submitButton.classList.add('disabled');
@@ -115,4 +132,28 @@ const render = (state, elements) => {
   }
 };
 
-export { render, renderNewPosts };
+export { render, renderNewPosts, renderModal };
+
+{ /* <div class="modal fade show" id="modal" tabindex="-1" aria-labelledby="modal" style="display: block;" aria-modal="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Lorem ipsum 2025-07-22T08:05:00Z</h5>
+          <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-break">Qui fugiat enim ea occaecat nisi qui.</div>
+        <div class="modal-footer">
+          <a class="btn btn-primary full-article" href="http://example.com/test/1753171500" role="button" target="_blank" rel="noopener noreferrer">
+            Читать полностью
+          </a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-10 col-lg-8 order-1 mx-auto posts"><div class="card border-0">
+      <div class="card-body"><h2 class="card-title h4">Посты</h2></div>
+    <ul class="list-group border-0 rounded-0">
+      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171620" class="fw-bold" data-id="13" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:07:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="13" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li>
+      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171560" class="fw-normal link-secondary" data-id="12" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:06:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="12" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li>
+      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0"><a href="http://example.com/test/1753171500" class="fw-normal link-secondary" data-id="2" target="_blank" rel="noopener noreferrer">Lorem ipsum 2025-07-22T08:05:00Z</a><button type="button" class="btn btn-outline-primary btn-sm" data-id="2" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button></li> */ }

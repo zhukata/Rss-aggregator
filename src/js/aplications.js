@@ -5,7 +5,7 @@ import i18next from 'i18next';
 import validate from './validate.js';
 import downloadRss from './downloadRss.js';
 import parseRss from './parser.js';
-import { render, renderNewPosts } from './views.js';
+import { render, renderModal, renderNewPosts } from './views.js';
 import resources from '../locales/index.js';
 import { createFeed, createPosts } from './utils.js';
 
@@ -30,10 +30,22 @@ export default async () => {
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
   };
-
   const watchedState = onChange(state, (path) => {
     if (['process', 'errors', 'feeds'].includes(path)) {
       render(watchedState, elements);
+
+      const showButtons = document.querySelectorAll('button[data-bs-toggle="modal"]');
+      showButtons.forEach((button) => {
+        const aEl = button.previousSibling;
+        aEl.addEventListener('click', (e) => {
+          // e.preventDefault()
+          aEl.classList = 'fw-normal link-secondary';
+        });
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          renderModal(e.target, watchedState.posts);
+        });
+      });
     }
   });
 
