@@ -1,25 +1,25 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 const createFeed = (title, description, url) => {
-  const feedId = uuidv4();
+  const feedId = uuidv4()
   const feed = {
     id: feedId,
     url,
     title,
     description,
-  };
-  return feed;
-};
+  }
+  return feed
+}
 
 const createPosts = (items, feedId) => {
-  const posts = Array.from(items).map((item) => ({
+  const posts = Array.from(items).map(item => ({
     id: uuidv4(),
     feedId,
     title: item.querySelector('title')?.textContent ?? 'No title',
     link: item.querySelector('link')?.textContent ?? '#',
     description: item.querySelector('description')?.textContent ?? 'No description',
-  }));
-  return posts;
-};
+  }))
+  return posts
+}
 
-export { createFeed, createPosts };
+export { createFeed, createPosts }

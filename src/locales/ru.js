@@ -13,4 +13,4 @@ export default {
       unknown: 'Ресурс не содержит валидный RSS',
     },
   },
-};
+}

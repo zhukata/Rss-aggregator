@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 export default {
   resolve: {
@@ -10,4 +10,4 @@ export default {
     port: 8080,
     hot: true,
   },
-};
+}
