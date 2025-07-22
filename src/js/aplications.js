@@ -30,24 +30,11 @@ export default async () => {
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
   };
-  const watchedState = onChange(state, (path) => {
-    if (['process', 'errors', 'feeds'].includes(path)) {
-      render(watchedState, elements);
-
-      const showButtons = document.querySelectorAll('button[data-bs-toggle="modal"]');
-      showButtons.forEach((button) => {
-        const aEl = button.previousSibling;
-        aEl.addEventListener('click', (e) => {
-          // e.preventDefault()
-          aEl.classList = 'fw-normal link-secondary';
-        });
-        button.addEventListener('click', (e) => {
-          e.preventDefault();
-          renderModal(e.target, watchedState.posts);
-        });
-      });
-    }
-  });
+const watchedState = onChange(state, (path) => {
+  if (['process', 'errors', 'feeds'].includes(path)) {
+    render(watchedState, elements);
+  }
+});
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();

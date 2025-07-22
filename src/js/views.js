@@ -21,6 +21,17 @@ const createCard = (titleText, listItems) => {
   return cardEl;
 };
 
+const renderModal = (post) => {
+  const modalTitleEl = document.querySelector('.modal-title');
+  const modalBodyEl = document.querySelector('.modal-body');
+  const modalFooter = document.querySelector('.modal-footer');
+  const modalLink = modalFooter.querySelector('a');
+
+  modalTitleEl.textContent = post.title;
+  modalBodyEl.textContent = post.description;
+  modalLink.href = post.link;
+};
+
 const createFeedsEl = (data) => data.map((item) => {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'border-0', 'border-end-0');
@@ -37,7 +48,7 @@ const createFeedsEl = (data) => data.map((item) => {
   return li;
 });
 
-const createPostsEl = (data) => data.map((item) => {
+const createPostsEl = (data, state) => data.map((item) => {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -49,24 +60,35 @@ const createPostsEl = (data) => data.map((item) => {
   link.target = '_blank';
   link.rel = 'noopener noreferrer';
 
+  link.addEventListener('click', () => {
+    link.classList.remove('fw-bold');
+    link.classList.add('fw-normal', 'link-secondary');
+  });
+
   const button = document.createElement('button');
-  // <button type="button" class="btn btn-outline-primary btn-sm" data-id="13"
   button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
   button.setAttribute('type', 'button');
   button.setAttribute('data-id', item.id);
   button.setAttribute('data-bs-toggle', 'modal');
   button.setAttribute('data-bs-target', '#modal');
   button.textContent = i18next.t('show');
+
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    renderModal(item);
+  });
+
   li.append(link, button);
   return li;
 });
 
-const renderContent = (feeds, posts, elements) => {
+
+const renderContent = (feeds, posts, elements, state) => {
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
 
   const feedsCard = createCard(i18next.t('feeds'), createFeedsEl(feeds));
-  const postsCard = createCard(i18next.t('posts'), createPostsEl(posts));
+  const postsCard = createCard(i18next.t('posts'), createPostsEl(posts, state));
 
   elements.feeds.append(feedsCard);
   elements.posts.append(postsCard);
@@ -78,20 +100,6 @@ const renderNewPosts = (newPosts, posts) => {
   ulPosts.prepend(...newLiEl);
 };
 
-const renderModal = (target, posts) => {
-  target.previousSibling.classList = 'fw-normal link-secondary';
-  const modalTitleEl = document.querySelector('.modal-title');
-  const modalBodyEl = document.querySelector('.modal-body');
-  const modalFooter = document.querySelector('.modal-footer');
-  const modalLink = modalFooter.querySelector('a');
-
-  const postId = target.dataset.id;
-  const currentPost = posts.filter((post) => post.id === postId)[0];
-
-  modalTitleEl.textContent = currentPost.title;
-  modalBodyEl.textContent = currentPost.description;
-  modalLink.href = currentPost.link;
-};
 const render = (state, elements) => {
   const {
     process, errors, feeds, posts,
@@ -99,7 +107,7 @@ const render = (state, elements) => {
   const {
     url, feedback, submitButton, form,
   } = elements;
-  console.log(elements.showButtons);
+
   url.classList.remove('is-invalid');
   feedback.textContent = '';
   feedback.classList.remove('text-danger', 'text-success');
@@ -119,7 +127,7 @@ const render = (state, elements) => {
       feedback.classList.add('text-success');
       submitButton.classList.remove('disabled');
       form.reset();
-      renderContent(feeds, posts, elements);
+      renderContent(feeds, posts, elements, state);
       break;
     }
 
