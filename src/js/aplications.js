@@ -30,11 +30,11 @@ export default async () => {
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
   };
-const watchedState = onChange(state, (path) => {
-  if (['process', 'errors', 'feeds'].includes(path)) {
-    render(watchedState, elements);
-  }
-});
+  const watchedState = onChange(state, (path) => {
+    if (['process', 'errors', 'feeds'].includes(path)) {
+      render(watchedState, elements);
+    }
+  });
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();

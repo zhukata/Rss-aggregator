@@ -21,11 +21,14 @@ const createCard = (titleText, listItems) => {
   return cardEl;
 };
 
-const renderModal = (post) => {
+const renderModal = (post, aEl) => {
   const modalTitleEl = document.querySelector('.modal-title');
   const modalBodyEl = document.querySelector('.modal-body');
   const modalFooter = document.querySelector('.modal-footer');
   const modalLink = modalFooter.querySelector('a');
+
+  aEl.classList.remove('fw-bold');
+  aEl.classList.add('fw-normal', 'link-secondary');
 
   modalTitleEl.textContent = post.title;
   modalBodyEl.textContent = post.description;
@@ -48,7 +51,7 @@ const createFeedsEl = (data) => data.map((item) => {
   return li;
 });
 
-const createPostsEl = (data, state) => data.map((item) => {
+const createPostsEl = (data) => data.map((item) => {
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -75,20 +78,19 @@ const createPostsEl = (data, state) => data.map((item) => {
 
   button.addEventListener('click', (e) => {
     e.preventDefault();
-    renderModal(item);
+    renderModal(item, link);
   });
 
   li.append(link, button);
   return li;
 });
 
-
-const renderContent = (feeds, posts, elements, state) => {
+const renderContent = (feeds, posts, elements) => {
   elements.feeds.innerHTML = '';
   elements.posts.innerHTML = '';
 
   const feedsCard = createCard(i18next.t('feeds'), createFeedsEl(feeds));
-  const postsCard = createCard(i18next.t('posts'), createPostsEl(posts, state));
+  const postsCard = createCard(i18next.t('posts'), createPostsEl(posts));
 
   elements.feeds.append(feedsCard);
   elements.posts.append(postsCard);
